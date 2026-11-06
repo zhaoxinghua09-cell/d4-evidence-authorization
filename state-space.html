@@ -1,0 +1,114 @@
+<!doctype html><meta charset=utf-8><title>D4 两轴状态空间</title>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--line:#21262d;--ink:#e6edf3;--dim:#8b949e;
+--ok:#3fb950;--bad:#f85149;--warn:#d29922;--key:#58a6ff;--mono:ui-monospace,
+SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);padding:32px 20px 64px;
+font:14.5px/1.6 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:1120px;margin:0 auto}
+h1{font-size:23px;margin:0;font-weight:660;letter-spacing:-.01em}
+.sub{color:var(--dim);font-size:13px;margin:7px 0 26px}
+h2{font-size:14px;margin:32px 0 12px;color:var(--dim);font-weight:600;
+letter-spacing:.06em;text-transform:uppercase}
+table.mx{border-collapse:separate;border-spacing:5px;width:100%}
+table.mx th{color:var(--dim);font:600 11.5px/1.3 var(--mono);padding:8px 6px;
+text-align:center;letter-spacing:.02em;font-weight:600}
+table.mx th.rowh{text-align:right;padding-right:10px;white-space:nowrap}
+td.c{background:var(--panel);border:1px solid var(--line);border-radius:8px;
+padding:11px 7px;text-align:center;font:600 10.5px/1.25 var(--mono);
+color:var(--dim);min-width:96px;vertical-align:middle}
+td.c.key{background:rgba(88,166,255,.13);border-color:rgba(88,166,255,.55);
+color:var(--key)}
+td.c.risk{background:rgba(210,153,34,.10);border-color:rgba(210,153,34,.42);
+color:var(--warn)}
+td.c.norm{opacity:.55}
+td.c .n{display:block;font-weight:500;font-size:10px;margin-top:3px;
+color:var(--ink);opacity:.62;font-family:inherit}
+.legend{color:var(--dim);font-size:12px;margin-top:12px;line-height:1.9}
+.legend b{font-weight:600}
+.sw{display:inline-block;width:9px;height:9px;border-radius:2px;
+margin-right:5px;vertical-align:0}
+table.t{width:100%;border-collapse:collapse;font-size:13px}
+table.t td{padding:9px 10px;border-bottom:1px solid rgba(33,38,45,.8);
+vertical-align:top}
+table.t tr:last-child td{border-bottom:none}
+table.t td.k{color:var(--dim);font:600 11.5px/1.4 var(--mono);white-space:nowrap;
+width:56px}
+table.t td.r{font:600 11.5px/1.4 var(--mono);color:var(--warn);white-space:nowrap;width:64px}
+table.t td.cell{background:var(--panel);border-radius:8px;padding:9px 11px}
+.gap{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:0 4px}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
+color:var(--dim);font-size:12px;line-height:1.8}
+code{font-family:var(--mono);font-size:11.5px;background:#21262d;padding:1.5px 5px;border-radius:4px}
+</style><div class=wrap>
+<h1>D4 · 证据质量 × 授权有效性：25 个状态</h1>
+<div class=sub>每个格子是一个合法状态；本文件存在的理由是<b>其中 5 个格子任何单值表示都表达不出来</b>。点击图注见 §4。</div>
+<h2>状态空间</h2>
+<table class=mx><tr><th class=rowh>证据 ↓ / 授权 →</th>
+<th>在效<br><span style='font-weight:400;opacity:.7'>A-in-force</span></th>
+<th>暂停<br><span style='font-weight:400;opacity:.7'>A-suspended</span></th>
+<th>撤销<br><span style='font-weight:400;opacity:.7'>A-revoked</span></th>
+<th>过期<br><span style='font-weight:400;opacity:.7'>A-expired</span></th>
+<th>取不到记录<br><span style='font-weight:400;opacity:.7'>A-unknown</span></th>
+</tr>
+<tr><th class=rowh>没有证据<br><span style='font-weight:400;opacity:.7'>E-absent</span></th>
+<td class='c key'>in-force<span class=n>允许但无据</span></td>
+<td class='c norm'>suspended</td>
+<td class='c norm'>revoked</td>
+<td class='c norm'>expired</td>
+<td class='c risk'>unknown<span class=n>无据 + 无查</span></td>
+</tr>
+<tr><th class=rowh>声称有、取不到<br><span style='font-weight:400;opacity:.7'>E-declared</span></th>
+<td class='c risk'>in-force<span class=n>声称≠有</span></td>
+<td class='c norm'>suspended</td>
+<td class='c norm'>revoked</td>
+<td class='c norm'>expired</td>
+<td class='c risk'>unknown</td>
+</tr>
+<tr><th class=rowh>有工件、未核<br><span style='font-weight:400;opacity:.7'>E-present-unverified</span></th>
+<td class='c risk'>in-force<span class=n>未核≠已核</span></td>
+<td class='c norm'>suspended</td>
+<td class='c norm'>revoked</td>
+<td class='c norm'>expired</td>
+<td class='c risk'>unknown</td>
+</tr>
+<tr><th class=rowh>已按具名方法核过<br><span style='font-weight:400;opacity:.7'>E-verified</span></th>
+<td class='c norm'>in-force<span class=n>唯一正常态</span></td>
+<td class='c norm'>suspended</td>
+<td class='c key'>revoked<span class=n>证据好≠有权</span></td>
+<td class='c norm'>expired</td>
+<td class='c risk'>unknown</td>
+</tr>
+<tr><th class=rowh>有证据且与主张冲突<br><span style='font-weight:400;opacity:.7'>E-contradicted</span></th>
+<td class='c key'>in-force<span class=n>冲突≠缺失</span></td>
+<td class='c norm'>suspended</td>
+<td class='c norm'>revoked</td>
+<td class='c norm'>expired</td>
+<td class='c risk'>unknown</td>
+</tr>
+</table>
+<div class=legend><span class=sw style='background:rgba(88,166,255,.7)'></span><b>蓝 = 必须单列</b>：单值表示会把这一格读反　<span class=sw style='background:rgba(210,153,34,.7)'></span><b>黄 = 危险</b>：这一格最常被误读成相邻格　<span class=sw style='background:#21262d'></span><b>灰 = 常规</b>：无需特殊要求</div>
+<h2>六种禁止的合并（§4）</h2>
+<div class=gap><table class=t>
+<tr><td class=k>§4.2</td><td class=r>E-absent + A-in-force</td><td class=cell>被压成「已批准」（隐瞒没查）或「未授权」（否认存在的权）</td></tr>
+<tr><td class=k>§4.3</td><td class=r>E-contradicted</td><td class=cell>被压成 E-absent —— 冲突变成缺口，冲突信息当场丢失</td></tr>
+<tr><td class=k>§4.4</td><td class=r>E-verified</td><td class=cell>被读成「主张为真」；未写方法名即不可复核</td></tr>
+<tr><td class=k>§4.5</td><td class=r>E-verified + A-revoked</td><td class=cell>证据好被当成有权 —— 往放行方向错</td></tr>
+<tr><td class=k>§4.6</td><td class=r>A-unknown</td><td class=cell>被读成 A-in-force（默认放行）或 A-revoked（默认拒绝）</td></tr>
+</table></div>
+<h2>符合性测试（§6）— 标蓝的两条是底线</h2>
+<div class=gap><table class=t>
+<tr><td class=k style='color:var(--key)'>T-4</td><td class=k>R-5.4.2</td><td class=cell>记录取不到 → 必须报 A-unknown <b style='color:var(--key)'>底线</b></td></tr>
+<tr><td class=k style='color:var(--key)'>T-2</td><td class=k>R-5.2.3</td><td class=cell>冲突证据 → 不得等于 E-absent 的报法 <b style='color:var(--key)'>底线</b></td></tr>
+<tr><td class=k style='color:var(--dim)'>T-1</td><td class=k>R-4.1.2</td><td class=cell>(E-absent, A-in-force) → 不得给单值 </td></tr>
+<tr><td class=k style='color:var(--dim)'>T-3</td><td class=k>R-5.2.2</td><td class=cell>E-verified → 必须给方法标识符 </td></tr>
+<tr><td class=k style='color:var(--dim)'>T-5</td><td class=k>R-5.4.3</td><td class=cell>不可达时的决定 → 须与可达时可区分 </td></tr>
+<tr><td class=k style='color:var(--dim)'>T-6</td><td class=k>R-5.5.1</td><td class=cell>变更两侧各一决定 → 须记版本 </td></tr>
+<tr><td class=k style='color:var(--dim)'>T-7</td><td class=k>R-5.5.3</td><td class=cell>不发事件改值 → 再查须能发现 </td></tr>
+<tr><td class=k style='color:var(--dim)'>T-8</td><td class=k>R-5.6.3</td><td class=cell>重评改值 → 前值须仍可恢复 </td></tr>
+<tr><td class=k style='color:var(--dim)'>T-9</td><td class=k>R-5.7.2</td><td class=cell>跨变更的长动作 → 分段归属可恢复 </td></tr>
+</table></div>
+<footer>
+本图与 <code>D4_证据质量与授权有效性_要求_v0.1.md</code> 同源；§4 的六条合并禁令与 §6 的九条测试为规范性内容。<br>T-2 与 T-4 是底线：只过这两条的系统，也已消除单值表示无法表达的两个失败模式。<br>图是自审产物，不是独立评审；D4 目前只有 <b>一份</b>草稿，尚无专家席与红队轮。
+</footer></div>
