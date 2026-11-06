@@ -180,6 +180,10 @@ Each requirement names what must be recoverable, not how it is produced. Mechani
 
 **R-7.1.3** Where the bound has elapsed, the pair MUST be re-determined before it is relied on, or the reliance MUST be reported as being on a lapsed determination. A lapsed determination MUST NOT be reported as current.
 
+**R-7.1.3a** A determination is lapsed when the elapsed time since its determination time exceeds its validity bound. A report MUST carry a field that is true if and only if the determination is lapsed at the time of the report.
+
+*Stated in the body rather than only in the test, for the reason given at R-7.2.2a.*
+
 **R-7.1.4** The bound MUST be declared by the party that determines the pair, and MUST be recoverable by a consumer that did not determine it.
 
 ### 5.2 Evidence axis
@@ -187,6 +191,10 @@ Each requirement names what must be recoverable, not how it is produced. Mechani
 **R-7.2.1** Axis E MUST distinguish at minimum the five values of Clause 3.1.
 
 **R-7.2.2** Where the value is E-verified, the method used MUST be named, and the name MUST identify the method rather than describe it in prose.
+
+**R-7.2.2a** A method identifier conforms only if all of the following hold: it contains no whitespace; it is at most 40 characters; and it is not one of the reserved placeholders `none`, `n/a`, `unknown`, `tbd`, `hitl`. A name that describes the method rather than identifying it ("verified by hand", "checked against registry") is a description and does not conform.
+
+*The criterion is stated here, in the body, because a criterion that exists only in a test script is defined by the script rather than by this document. A specialist review made this point and it applies to every test in this contribution.*
 
 **R-7.2.3** E-contradicted MUST be reportable as its own value and MUST NOT be reported as a low value on an ordered evidence scale.
 
@@ -227,7 +235,9 @@ Each requirement names what must be recoverable, not how it is produced. Mechani
 
 **R-7.5.2** The record of a decision MUST be sufficient for a party who did not take part in it to establish which version of the pair governed, and at what time.
 
-**R-7.5.3** A change to either axis MUST be recorded as a change in the reference record, not solely as an event delivered to consumers. A consumer that received no event MUST still be able to determine, at its next consultation, that the state changed.
+**R-7.5.3** A change to either axis MUST be observable at the consumer's next consultation, not solely through an event delivered to consumers.
+
+*This requirement is stated in the terms of its observable effect rather than as a prescription of where state is stored, because how a change is carried is D2's ([#5](https://github.com/FG-TIDA/themes/issues/5)) subject and this contribution should reference it rather than restate it. An earlier draft prescribed that the change be recorded in the reference record, which is both a mechanism and a duplication of #5's scope; a specialist review raised both points.*
 
 **R-7.5.4** The record of a decision MUST be distinguishable from an acknowledgement that a check was performed. An acknowledgement is not a record of what was consulted.
 
@@ -241,7 +251,9 @@ Each requirement names what must be recoverable, not how it is produced. Mechani
 
 **R-7.6.4** Late-arriving evidence for a subject whose acts have already been decided MUST cause the earlier decisions to be re-examinable. It MUST NOT silently alter the pair in a way that makes the earlier decisions appear to have been taken on the new evidence.
 
-### 5.7 Acts already under way
+### 7.7 Acts already under way
+
+> **Boundary note.** The treatment of an act already under way is jointly D5's ([themes#60](https://github.com/FG-TIDA/themes/issues/60)) and this contribution's. D5 owns whether and when a consultation happens at run time, and how a change reaches an enforcement point. This contribution owns what must be recoverable afterwards: which pair governed which segment. The requirements below are stated only in that second sense.
 
 The following applies where a reference changes while an act that consulted it is still in progress, including acts dispatched by an agent and performed by workers it started.
 
@@ -340,6 +352,43 @@ The claim in Clause 1 — that the two properties fail independently and that an
 
 ---
 
+## Annex B (informative) — Conformance suite and stating a claim
+
+**B.1 The suite.** An executable suite implementing the tests of Clause 8 is published alongside
+this contribution at
+[github.com/zhaoxinghua09-cell/d4-evidence-authorization](https://github.com/zhaoxinghua09-cell/d4-evidence-authorization),
+in `d4conformance/conformance.py`. It has no dependencies beyond Python 3.8 and runs offline. At
+the time of writing it reports eleven of eleven tests passing against a reference implementation
+and, for each test, a deliberately non-conforming implementation that the test rejects.
+
+This annex is **informative**. The requirements are in Clauses 6 and 7; the suite is evidence that
+they can be tested, not a substitute for the requirements. Where the suite and the body disagree,
+the body governs and the suite is defective.
+
+**B.2 Stating a conformance claim.** A claim of conformance to this contribution should take the
+form of the table below. It exists so that a reader can see what was tested and what was not,
+rather than inferring either from a passing run.
+
+| Item | To be completed by the claimant |
+|---|---|
+| Implementation and version | |
+| Determination carries the pair, or is unavailable (R-6.4.0) | conforms / does not conform |
+| Both axes distinguished at minimum the stated values (R-7.2.1, R-7.3.1) | conforms / does not conform |
+| Unavailability reported as unavailable, never as an axis value (R-7.4.2) | conforms / does not conform |
+| Consulted version recorded and tracked across change (R-7.5.1) | conforms / does not conform |
+| A change observable without an event (R-7.5.3) | conforms / does not conform |
+| Prior value recoverable after re-evaluation (R-7.6.3) | conforms / does not conform |
+| Authority determined at the time of the decision (R-7.3.4) | conforms / does not conform |
+| A lapsed determination never reported as current (R-7.1.3) | conforms / does not conform |
+| Acts under way bounded and segmented (R-7.7.1 – R-7.7.4) | conforms / does not conform |
+| Requirements **not** covered by test in this revision | the list at the end of Clause 8 |
+| Statement of which untested requirements are claimed anyway, and on what basis | |
+
+**B.3 What the suite does not establish.** It does not establish that an implementation satisfies
+the twenty-one requirements listed at the end of Clause 8, and it does not establish that the
+implementation behaves correctly outside the test inputs. It establishes only that the eleven
+tested requirements were exercised and that the suite can reject an implementation that fails them.
+
 ## Annex A (informative) — Changes in this revision
 
 | Change | Why |
@@ -351,3 +400,6 @@ The claim in Clause 1 — that the two properties fail independently and that an
 | Clause 9 states assumptions rather than imposing requirements | A requirement that its addressee may accept, rewrite or reject is not a requirement. |
 | R-6.5.1 numbered | It stated a normative requirement outside the numbered set, so it was excluded from the conformance claim. |
 | Untested-requirement list corrected to 32 requirements and 11 tests | The list still named two requirements as untested after tests had been written for them. |
+| R-7.2.2a and R-7.1.3a added: the criteria for a method identifier and for a lapsed determination now appear in the body | Those criteria existed only in the test script, so the script was defining the requirement rather than testing it. |
+| Annex B added: the suite's standing and a form for stating a claim | A conformance claim had no prescribed form, and the suite's relation to the requirements was unstated. |
+| R-7.5.3 restated as an observable effect; Clause 7.7 given a boundary note | Both restated content owned by #5 and #60. Standard practice is to reference rather than duplicate. |
