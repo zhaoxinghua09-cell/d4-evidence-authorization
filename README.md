@@ -34,7 +34,7 @@ establishes nothing. It prints, for each test, the defect it was observed to cat
 ## What the suite tests, and what it does not
 
 The specification has 32 numbered requirements. The suite covers 11 of them.
-**§6 of the specification lists the 21 that are not covered**; a conformance claim
+**§6 of the specification lists the 25 that are not covered**; a conformance claim
 that omits that list is incomplete by the specification's own terms.
 
 An earlier version of this suite could be passed in full by an implementation that
