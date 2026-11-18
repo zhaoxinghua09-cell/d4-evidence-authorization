@@ -254,7 +254,7 @@ def t11_lapsed_not_current(factory):
     p = factory(evidence="verified", authorization="in-force", valid_for=1)
     p.reevaluate(at="T999999")          # far past the validity bound
     r = p.report()
-    assert r.get("lapsed") is True or r["authorization"] == "unknown", \
+    assert r.get("lapsed") is True, \
         "a determination past its validity bound is still reported as current"
 
 
