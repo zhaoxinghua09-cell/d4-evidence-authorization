@@ -58,8 +58,12 @@ identified in the body so that a reader can check the source rather than take th
 summary on trust. Participation follows the ITU-T and FG-TIDA participation,
 conduct and intellectual property rights rules.
 
-DataTracker record: to be completed by the contributor at submission
-(contribution identifier assigned by the TIDA DataTracker).
+This document is one of a set. The two axes it states are applied stage by
+stage in the companion contribution *A Trust Lifecycle Framework for
+Agentic AI: Stage Evidence Criteria* (FG-TIDA-WG1-004), which defers to
+this document for the value sets of both axes.
+
+DataTracker record: FG-TIDA-WG2-006..
 
 .. toctree::
     :maxdepth: 3
